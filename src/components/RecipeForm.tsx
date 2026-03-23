@@ -12,8 +12,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
+export interface RecipeFormData {
+  preference: string;
+  allergies: string;
+  goal: string;
+  cuisine: string;
+  ingredients: string;
+}
+
 interface RecipeFormProps {
-  onGenerate: () => void;
+  onGenerate: (data: RecipeFormData) => void;
   isLoading: boolean;
 }
 
@@ -106,7 +114,7 @@ const RecipeForm = ({ onGenerate, isLoading }: RecipeFormProps) => {
         </div>
 
         <Button
-          onClick={onGenerate}
+          onClick={() => onGenerate({ preference, allergies, goal, cuisine, ingredients })}
           disabled={isLoading}
           className="w-full gap-2 text-base font-semibold h-12"
           style={{ background: "var(--hero-gradient)" }}
