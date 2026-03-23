@@ -114,7 +114,7 @@ const RecipeForm = ({ onGenerate, isLoading }: RecipeFormProps) => {
         </div>
 
         <Button
-          onClick={onGenerate}
+          onClick={() => onGenerate({ preference, allergies, goal, cuisine, ingredients })}
           disabled={isLoading}
           className="w-full gap-2 text-base font-semibold h-12"
           style={{ background: "var(--hero-gradient)" }}
