@@ -1,23 +1,38 @@
 import { useState, useCallback } from "react";
 import Header from "@/components/Header";
 import RecipeForm from "@/components/RecipeForm";
+import type { RecipeFormData } from "@/components/RecipeForm";
 import RecipeCard from "@/components/RecipeCard";
 import VideoEmbed from "@/components/VideoEmbed";
-import { dummyRecipe } from "@/data/dummyRecipe";
 import type { Recipe } from "@/components/RecipeCard";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async (formData: RecipeFormData) => {
     setIsLoading(true);
     setRecipe(null);
-    setTimeout(() => {
-      setRecipe(dummyRecipe);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-recipe", {
+        body: formData,
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setRecipe(data.recipe);
+    } catch (e: any) {
+      toast({
+        title: "Generation failed",
+        description: e.message || "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1500);
-  }, []);
+    }
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-background font-sans">
