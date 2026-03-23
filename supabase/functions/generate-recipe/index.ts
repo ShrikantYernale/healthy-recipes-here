@@ -62,10 +62,22 @@ No markdown, no code fences, just pure JSON.`;
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limited — please try again in a moment." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits exhausted. Please add funds in Settings > Workspace > Usage." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
       const errText = await response.text();
-      console.error("OpenAI error:", response.status, errText);
+      console.error("AI gateway error:", response.status, errText);
       return new Response(
-        JSON.stringify({ error: `OpenAI API error (${response.status})` }),
+        JSON.stringify({ error: `AI gateway error (${response.status})` }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
