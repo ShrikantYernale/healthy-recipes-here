@@ -12,8 +12,16 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
 
+export interface RecipeFormData {
+  preference: string;
+  allergies: string;
+  goal: string;
+  cuisine: string;
+  ingredients: string;
+}
+
 interface RecipeFormProps {
-  onGenerate: () => void;
+  onGenerate: (data: RecipeFormData) => void;
   isLoading: boolean;
 }
 
